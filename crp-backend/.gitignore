@@ -35,3 +35,19 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Database ###
+*.db
+*.sqlite
+*.sqlite3
+
+### Docker ###
+.dockerignore
+
+### Logs ###
+*.log
+logs/
+
+### OS ###
+.DS_Store
+Thumbs.db

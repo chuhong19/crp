@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'com.diffplug.spotless' version '6.25.0'
+	id 'org.liquibase.gradle' version '2.2.0'
 }
 
 group = 'com.example'
@@ -27,10 +28,17 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.liquibase:liquibase-core'
+	implementation 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Liquibase Gradle plugin runtime deps
+	liquibaseRuntime 'org.liquibase:liquibase-core'
+	liquibaseRuntime 'org.postgresql:postgresql'
+	liquibaseRuntime 'info.picocli:picocli:4.7.5'
 }
 
 tasks.named('test') {
@@ -44,3 +52,18 @@ spotless {
 		removeUnusedImports()
 	}
 }
+
+// Liquibase Gradle plugin configuration
+liquibase {
+	activities {
+		main {
+			changelogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
+			url System.getenv('DB_URL') ?: 'jdbc:postgresql://localhost:5432/crp_db'
+			username System.getenv('DB_USERNAME') ?: 'giabao'
+			password System.getenv('DB_PASSWORD') ?: 'giabao123'
+		}
+	}
+	runList = 'main'
+}
+
+
